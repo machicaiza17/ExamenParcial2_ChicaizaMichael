@@ -2,6 +2,7 @@ package ec.espe.banquito.service;
 
 import ec.espe.banquito.controller.dto.*;
 import ec.espe.banquito.model.Branch;
+import ec.espe.banquito.model.BranchHolidays;
 import ec.espe.banquito.repository.BranchRepository;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +33,63 @@ public class BranchService {
         return mapToResponseDTO(branch);
     }
 
-    
+    public BranchResponseDTO createBranch(CreateBranchDTO dto) {
+        Branch branch = new Branch();
+        branch.setName(dto.getName());
+        branch.setEmailAddress(dto.getEmailAddress());
+        branch.setPhoneNumber(dto.getPhoneNumber());
+        branch.setState(dto.getState());
+        branch.setCreationDate(LocalDateTime.now());
+        branch.setLastModifiedDate(LocalDateTime.now());
+
+        branchRepository.save(branch);
+        return mapToResponseDTO(branch);
+    }
+
+    public BranchResponseDTO updateBranchPhone(String id, UpdateBranchPhoneDTO dto) {
+        Branch branch = branchRepository.findById(id)
+                .orElseThrow(() -> {
+                    return new RuntimeException("Sucursal no encontrada");
+                });
+
+        branch.setPhoneNumber(dto.getPhoneNumber());
+        branch.setLastModifiedDate(LocalDateTime.now());
+        branchRepository.save(branch);
+        return mapToResponseDTO(branch);
+    }
+
+    public void deleteHolidaysFromBranch(String id) {
+        Branch branch = branchRepository.findById(id)
+                .orElseThrow(() -> {
+                    return new RuntimeException("Sucursal no encontrada");
+                });
+
+        branch.setBranchHolidays(null);
+        branch.setLastModifiedDate(LocalDateTime.now());
+        branchRepository.save(branch);
+    }
+
+    public boolean isDateHoliday(String id, LocalDate date) {
+        Branch branch = branchRepository.findById(id)
+                .orElseThrow(() -> {
+                    return new RuntimeException("Sucursal no encontrada");
+                });
+        boolean isHoliday = branch.getBranchHolidays().stream()
+                .anyMatch(h -> h.getDate().equals(date));
+
+        return isHoliday;
+    }
+
+    private BranchResponseDTO mapToResponseDTO(Branch branch) {
+        BranchResponseDTO dto = new BranchResponseDTO();
+        dto.setId(branch.getId());
+        dto.setName(branch.getName());
+        dto.setEmailAddress(branch.getEmailAddress());
+        dto.setPhoneNumber(branch.getPhoneNumber());
+        dto.setState(branch.getState());
+        dto.setCreationDate(branch.getCreationDate());
+        dto.setLastModifiedDate(branch.getLastModifiedDate());
+        return dto;
+    }
+
 }

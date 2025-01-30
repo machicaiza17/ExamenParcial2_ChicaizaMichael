@@ -14,13 +14,9 @@ public class BranchResponseDTO {
     private String emailAddress;
     private String phoneNumber;
     private String state;
+    private LocalDateTime creationDate;
+    private LocalDateTime lastModifiedDate;
     private List<BranchHolidaysDTO> holidays;
-    public void setCreationDate(LocalDateTime creationDate) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setCreationDate'");
-    }
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setLastModifiedDate'");
-    }
+
+    
 }
